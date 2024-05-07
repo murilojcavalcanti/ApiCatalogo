@@ -8,7 +8,7 @@ AppDbContext: Classe que implementa o DbContext que representa uma sessão com o
 DBContext: Representa uma sesão com o banco de dados sendo a ponte entre as entidades de dominio e o banco de dados
 DbSet<T>: Representa uma coleção de entidades no contexto que podem ser consultadas no banco de dados
 
-DTO (Data Annotations Object)
+Data Annotations
 São conjuntos de atributos que podem ser aplicados a classes e seus membros para fornecer metadados sobre como esses 
 recursos devem ser tratados pelo sistema;
 
