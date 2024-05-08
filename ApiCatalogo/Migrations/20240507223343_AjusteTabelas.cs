@@ -58,13 +58,13 @@ namespace ApiCatalogo.Migrations
 
             migrationBuilder.UpdateData(
                 table: "Produtos",
-                keyColumn: "Descrição",
+                keyColumn: "Descricao",
                 keyValue: null,
-                column: "Descrição",
+                column: "Descricao",
                 value: "");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Descrição",
+                name: "Descricao",
                 table: "Produtos",
                 type: "varchar(300)",
                 maxLength: 300,
@@ -77,13 +77,13 @@ namespace ApiCatalogo.Migrations
 
             migrationBuilder.UpdateData(
                 table: "Categorias",
-                keyColumn: "imagem",
+                keyColumn: "ImagemUrl",
                 keyValue: null,
-                column: "imagem",
+                column: "ImagemUrl",
                 value: "");
 
             migrationBuilder.AlterColumn<string>(
-                name: "imagem",
+                name: "ImagemUrl",
                 table: "Categorias",
                 type: "varchar(300)",
                 maxLength: 300,
@@ -148,7 +148,7 @@ namespace ApiCatalogo.Migrations
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Descrição",
+                name: "Descricao",
                 table: "Produtos",
                 type: "longtext",
                 nullable: true,
@@ -159,7 +159,7 @@ namespace ApiCatalogo.Migrations
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AlterColumn<string>(
-                name: "imagem",
+                name: "ImagemUrl",
                 table: "Categorias",
                 type: "longtext",
                 nullable: true,
