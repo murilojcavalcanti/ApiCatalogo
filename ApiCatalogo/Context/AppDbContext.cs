@@ -7,7 +7,7 @@ namespace ApiCatalogo.Context
     {
         public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts) { }
 
-        DbSet<Categoria> Categorias { get; set; }
-        DbSet<Produto> Produtos { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Produto> Produtos { get; set; }
     }
 }
