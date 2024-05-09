@@ -15,4 +15,17 @@ recursos devem ser tratados pelo sistema;
 -Realizar validações de entrada de dados 
 -Influenciar o comportamento do modelo de dados
 
+Controllers:
 
+São arquivos onde estão os métodos que são uteis para lidar com as requisições http
+
+[APIController]:
+Atributo que premite decorar os controladores habilitando recursoso como:
+-Requisito de roteamento de atributo;
+-Resposta HTTP 400 automaticas
+-Inferencia de parâmetro de origem de associação
+-Inferencia de solicitação de dados de varias partes
+-Uso de problem Details para codigos de status de erro
+
+[Route]:
+Especifica um padrão de url para acessar um control
