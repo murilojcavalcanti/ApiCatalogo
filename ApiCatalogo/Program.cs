@@ -1,5 +1,6 @@
 using ApiCatalogo.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -8,7 +9,11 @@ builder.Services.AddDbContext<AppDbContext>(opts =>opts.UseMySql(ConString,Serve
 
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opts =>
+{
+    //Ignora o objeto quando um ciclo de referencia é detectado durante a serialização.
+    opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -29,3 +29,7 @@ Atributo que premite decorar os controladores habilitando recursoso como:
 
 [Route]:
 Especifica um padrão de url para acessar um control
+
+
+ReferenceHandler
+Define como o JsonSerialxer lida com referencias sobre serialização e desserialização
