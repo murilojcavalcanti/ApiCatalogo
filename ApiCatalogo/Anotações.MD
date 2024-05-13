@@ -43,3 +43,8 @@ Dicas de otimização
 2- Nunca retorne todos os registros em um consulta
 	sempre aplique um filtro e reduza o numero de objetos no retorno, pode usar o metodo take.
 
+Tratemento de erros
+Para configurar uma pagina de tratamento de erros personalizada para o ambiente de produção usamos o middleware UseExceptionHandler
+
+Captura e registra exceções não tratadas
+executa novamente o request em um pipe line alternativo usando o caminho indicado. O codigo gerado executa o request usando o caminho /Error
