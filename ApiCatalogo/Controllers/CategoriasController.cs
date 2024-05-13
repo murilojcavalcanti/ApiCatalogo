@@ -27,14 +27,14 @@ namespace ApiCatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            var categorias = Context.Categorias.ToList();
+            var categorias = Context.Categorias.AsNoTracking().ToList();
             if(categorias is null) return NotFound("Nenhuma categoria foi encontrada...");
             return categorias;
         }
         [HttpGet("{id:int}",Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            var categoria = Context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+            var categoria = Context.Categorias.AsNoTracking().FirstOrDefault(c => c.CategoriaId == id);
             if (categoria is null) return NotFound("Categoria não encontrada...");
 
             return categoria;

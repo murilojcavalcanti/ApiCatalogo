@@ -33,3 +33,13 @@ Especifica um padrão de url para acessar um control
 
 ReferenceHandler
 Define como o JsonSerialxer lida com referencias sobre serialização e desserialização
+
+Dicas de otimização
+1- Quando consultamos entidades usando entity framework ele armazena as entidades no contexto (em cache) realizando o tracking das 
+	entidades para acompanhar o estado das entidades. Esse Recurso adiciona uma sobrecrga que afeta o desenpenho das consultas rastreadas
+
+	Para aumentar o desenpenho em consultas de leitura usamos o metodo AsNoTracking que tira essa sobrecarga nesse tipo de consulta.
+
+2- Nunca retorne todos os registros em um consulta
+	sempre aplique um filtro e reduza o numero de objetos no retorno, pode usar o metodo take.
+

@@ -2,6 +2,7 @@
 using ApiCatalogo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ApiCatalogo.Controllers
 {
@@ -17,9 +18,27 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>>Get()
+        public ActionResult<IEnumerable<Produto>>Get(int take = 0, int categoriaid = 0)
         {
-            var produtos = Context.Produtos.ToList();
+            List<Produto> produtos = null;
+
+            if (take != 0 && categoriaid !=0)
+            {
+                 produtos = Context.Produtos.AsNoTracking().Take(take).Where(p=>p.categoriaId==categoriaid).ToList();
+
+            }else if(take != 0 && categoriaid == 0)
+            {
+                produtos = Context.Produtos.AsNoTracking().Take(take).ToList();
+
+            }
+            else if (take == 0 && categoriaid != 0)
+            {
+                produtos = Context.Produtos.AsNoTracking().Where(p => p.categoriaId == categoriaid).ToList();
+            }
+            else
+            {
+                produtos = Context.Produtos.AsNoTracking().ToList();
+            }
             if (produtos is null) return NotFound("Produtos não encontrados");
             return produtos;
         }
@@ -27,7 +46,7 @@ namespace ApiCatalogo.Controllers
         [HttpGet("{id:int}",Name = "ObterProduto")]
         public ActionResult<Produto> Get(int id)
         {
-            var produto = Context.Produtos.FirstOrDefault(p=>p.ProdutoId==id);
+            var produto = Context.Produtos.AsNoTracking().FirstOrDefault(p=>p.ProdutoId==id);
             if (produto is null)
             {
                 return NotFound("Produto não encontrado!");
