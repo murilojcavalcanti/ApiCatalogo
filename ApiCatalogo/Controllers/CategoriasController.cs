@@ -16,7 +16,7 @@ namespace ApiCatalogo.Controllers
             Context = context;
         }
 
-        [HttpGet("Produtos")]
+        [HttpGet()]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos(int take = 10)
         {
             try
@@ -32,21 +32,8 @@ namespace ApiCatalogo.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Categoria>> Get()
-        {
-            try
-            {
-                var categorias = Context.Categorias.AsNoTracking().ToList();
-                if (categorias is null) return NotFound("Nenhuma categoria foi encontrada...");
-                return categorias;
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao tratar a sua solicitação");
-            }
-        }
-        [HttpGet("{id:int}", Name = "ObterCategoria")]
+        
+        [HttpGet("{id:int:min(1)}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
             try
@@ -80,7 +67,7 @@ namespace ApiCatalogo.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int:min(1)}")]
         public ActionResult Put(int id, Categoria categoria)
         {
 
@@ -89,7 +76,7 @@ namespace ApiCatalogo.Controllers
                 if (id != categoria.CategoriaId) return BadRequest("Dados inválidos");
                 Context.Entry(categoria).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 Context.SaveChanges();
-                return Ok();
+                return Ok(categoria);
             }
             catch (Exception)
             {
@@ -97,7 +84,7 @@ namespace ApiCatalogo.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int:min(1)}")]
         public ActionResult Delete(int id)
         {
             try

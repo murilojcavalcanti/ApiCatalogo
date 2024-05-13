@@ -48,3 +48,27 @@ Para configurar uma pagina de tratamento de erros personalizada para o ambiente 
 
 Captura e registra exceções não tratadas
 executa novamente o request em um pipe line alternativo usando o caminho indicado. O codigo gerado executa o request usando o caminho /Error
+
+Roteamento 
+É o responsavel por receber as requisições http e encamihar para os endpoints da controller representados pelos metodos action
+- Mapeia as requisições feitas via URI
+- Despacha as requisições para os endpoint
+- Pode extraiar valores da URL da requisição
+- Pode gerar URLs que mapeiam para os endpoints
+
+O roteamento nas WebAPIs é baseado em atributos
+A rota é determinada com base nos atributos definidos nos controladores e métodos Action
+As definições nos atributos irão realizar o mapeamento para as actions do controlador
+Podemos definir rotas nos atributos HttpGet, HttpPost, HttpPut e  HttpDelete que irão comport a rota definida no atributo Route
+
+Habilitando explicitamente o roteamento 
+
+Usando o UseRouting e UseEndpoints
+UseRouting:Adiciona correspondencia de rota ao pipeline de middleware. Esse middleware analisa o conjunto de endpoints definidos 
+no aplicativo e seleciona a melhor correspondencia com base na requisição.
+
+UseEndpoints:Adiciona a execução de eno=point ao pipeline de middleware. Ele executa o delegate associado ao end point selecionado.
+
+Restrições de rotas:
+Nos ajudam a filtrar ou impedir que os valores indesejadps atinjam os metodos action do controlador
+isso é feito verificando a restrição com relação ao valor do parâmetro da URL
