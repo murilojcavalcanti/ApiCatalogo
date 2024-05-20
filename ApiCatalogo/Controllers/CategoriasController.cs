@@ -16,15 +16,15 @@ namespace ApiCatalogo.Controllers
             Context = context;
         }
 
-        [HttpGet()]
-        public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos(int take = 10)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoriasProdutosAsync(int take = 10)
         {
             try
             {
 
-                var categoriasProdutos = Context.Categorias.Include(p => p.Produtos).Take(10).ToList();
+                var categoriasProdutos = Context.Categorias.Include(p => p.Produtos).Take(10).ToListAsync();
                 if (categoriasProdutos is null) return NotFound("Nenhuma categoria foi encontrada...");
-                return categoriasProdutos;
+                return await categoriasProdutos;
             }
             catch (Exception)
             {
@@ -34,11 +34,11 @@ namespace ApiCatalogo.Controllers
 
         
         [HttpGet("{id:int:min(1)}", Name = "ObterCategoria")]
-        public ActionResult<Categoria> Get(int id)
+        public async Task<ActionResult<Categoria>> GetAsync(int id)
         {
             try
             {
-                var categoria = Context.Categorias.AsNoTracking().FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = await Context.Categorias.AsNoTracking().FirstOrDefaultAsync(c => c.CategoriaId == id);
                 if (categoria is null) return NotFound("Categoria não encontrada...");
 
                 return categoria;

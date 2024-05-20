@@ -18,18 +18,18 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>> Get(int take = 10, int categoriaid = 0)
+        public async Task<ActionResult<IEnumerable<Produto>>> GetAsync(int take = 10, int categoriaid = 0)
         {
-            List<Produto> produtos = null;
+            List<Produto> produtos;
             try
             {
                 if ( categoriaid > 0)
                 {
-                    produtos = Context.Produtos.AsNoTracking().Take(take).Where(p => p.categoriaId == categoriaid).ToList();
+                    produtos = await Context.Produtos.AsNoTracking().Take(take).Where(p => p.categoriaId == categoriaid).ToListAsync();
 
                 }
                 else{
-                    produtos = Context.Produtos.AsNoTracking().Take(take).ToList();
+                    produtos = await Context.Produtos.AsNoTracking().Take(take).ToListAsync();
                 }
                 if (produtos is null) return NotFound("Produtos não encontrados");
                 return produtos;
@@ -41,11 +41,11 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
-        public ActionResult<Produto> Get(int id)
+        public async Task<ActionResult<Produto>> GetAsync(int id)
         {
             try
             {
-                var produto = Context.Produtos.AsNoTracking().FirstOrDefault(p => p.ProdutoId == id);
+                var produto = await Context.Produtos.AsNoTracking().FirstOrDefaultAsync(p => p.ProdutoId == id);
                 if (produto is null)
                 {
                     return NotFound($"Produto com id-> {id} não encontrado!");
