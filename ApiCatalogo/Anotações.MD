@@ -72,3 +72,60 @@ UseEndpoints:Adiciona a execução de eno=point ao pipeline de middleware. Ele e
 Restrições de rotas:
 Nos ajudam a filtrar ou impedir que os valores indesejadps atinjam os metodos action do controlador
 isso é feito verificando a restrição com relação ao valor do parâmetro da URL
+
+Tipos de retorno 
+Tipo especifico:
+retorna um tipo de dados complexo ou primitivo 
+
+IActionResult:
+É apropriado quando vários tipos de retorno actionREsult são possivel em métodos action
+
+ActionResult:
+Permite o retorno de um tipo especifico derivado de actionResult ou o retorno de um tipo especifico
+
+Metodos action 
+O servidor de uma aplicação .net possui um pool de threads que são usadas para servir as requisições que 
+chegam em um método action.
+
+- Sincronos:
+Quando um request chega, uma threads desse pool é encarregada de processar esse request.
+
+Se o request for proceesado de forma sincrona, a thread encarregada ficará bloqueada até o request finalizar.
+
+Assim, execução dos métodos é continua e se uam thread começar a executar um método, ela irá fiar ocupada até 
+a execução do método terminar.
+
+- Assíncrono
+Quando um request chega uma thread desse o=poool é encarregada de processar esse request
+
+Se o request for processado de forma assincrona, a thread é devolvida ao pool para servir novos requests.
+
+Assim, a execução dos métodos não é continua.
+Quando a operação assincrona terminar, a thread é avisada e retoma o controle de execução da action.
+
+Programação assincrona em .net
+No .net a abordagem é fazendo o uso das palavra async e await para criar metodos assincronos.
+É uma boa pratica definir o nome do metodo com Async no final quando ele for um metodo assincrono.
+Regras da programação assincrona no .net
+1- A assinatura do metodo dee incluir o medificador async;
+2- O método deve ter u tipo de retorno da task<Tresult>, taskou void;
+3- As declarações de método devem incluir pelo menos uma única expressão await- isso diz ao compilador que o métdo 
+precisa ser suspenso enquanto a operação agurdada estiver ocupada.
+4- Por ultimo, o nome do método dee terminar como sufixo "Async"
+
+Models Binding
+O model bindig é um recirso que nos permite mapear dados de uma requisição http para os parâmetro de uma action de um controlador
+Esse mapeamento inclui todos os tipos de parâmetros: numeros, string, array, etc
+
+Semrpe que uma requis~ção é recebida o framework asp .net core precisa tratar essa requisição de forma que possa passar valores 
+apropriados nos parâmetros das actions.
+
+Como funciona: Quando nossa api rece uma requisição HTTP ele roteia para um metodo action especifico de um controlador com base na rota definida
+Ela termina qual o metodo actions será executado com base no que estpa definido na rota e em seguida vincula os valores da requisição HTTP aos 
+parâmetros desse método action.
+
+Fontes de dados 
+1-Valores de formulario 
+2-Rotas 
+3-Query Strings
+
