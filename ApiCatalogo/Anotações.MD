@@ -114,18 +114,58 @@ precisa ser suspenso enquanto a operação agurdada estiver ocupada.
 4- Por ultimo, o nome do método dee terminar como sufixo "Async"
 
 Models Binding
-O model bindig é um recirso que nos permite mapear dados de uma requisição http para os parâmetro de uma action de um controlador
+O model bindig é um recurso que nos permite mapear dados de uma requisição http para os parâmetro de uma action de um controlador
 Esse mapeamento inclui todos os tipos de parâmetros: numeros, string, array, etc
 
-Semrpe que uma requis~ção é recebida o framework asp .net core precisa tratar essa requisição de forma que possa passar valores 
+Sempre que uma requisição é recebida o framework asp.net core precisa tratar essa requisição de forma que possa passar valores 
 apropriados nos parâmetros das actions.
 
-Como funciona: Quando nossa api rece uma requisição HTTP ele roteia para um metodo action especifico de um controlador com base na rota definida
-Ela termina qual o metodo actions será executado com base no que estpa definido na rota e em seguida vincula os valores da requisição HTTP aos 
+Como funciona: Quando nossa api recebe uma requisição HTTP ele roteia para um metodo action especifico de um controlador com base na rota definida
+Ela termina qual o metodo actions será executado com base no que está definido na rota e em seguida vincula os valores da requisição HTTP aos 
 parâmetros desse método action.
 
 Fontes de dados 
 1-Valores de formulario 
 2-Rotas 
 3-Query Strings
+
+[bind] - Obtém propriedades específicas
+
+FromServices:
+Sobrescreve a fonte de associação injetando os valores via injeção de dependencia em um método Action específico.
+
+Permite injetar as dependências diretamente no método Action do controlador que requer a dependência
+
+Habilita a injeção de um serviço diretamente em um método Action sem usar a injeção de construtor
+
+A partir do .net 7 a implementação do fromservices é feita de forma implicita, ou seja, não é necessario usar o atributo no método Action
+
+É possivel desabilitar o padrão dessa forma dentro do arquivo program:
+
+builder.services.configure<ApiBehaviorOptions>(options=>
+{
+	options.DisableImplicitFromServicesParameters=true;
+});
+
+DataAnnotations:
+Esse namespace fornece classes e atributos que são usado spara realizar a validação dos dados.
+
+Os atributos Data Annotations permitem aplicar a validação no modelo de domínio definindo os atributos.
+
+Validação personalizada
+ como criar uma validação persolizada
+ 1- Criar atributos personalizados
+	- seu foco é validar uma propriedade
+	- Pode ser reutilizada em diversos modelos
+ 2 - Implementar IValidatableObject no seu modelo
+	-Pode acessar todas as propriedades do modelo e realizar uma validação mais complexa
+	- Não pode ser reutilizada em outros modelos.
+
+	1- Criar atributos
+		- Criar uma classe que herda de validationAttribute e sobreescrever o metodo IsValid
+		O método isvalid aceita dois parametros:
+			-um objeto value, que é a entrada a ser validada
+			-um objeto validaionContext, que fornece informações adicionais, como a instancia de modelo criada por model binding;
+			
+			O método isValid retorna a classe ValidationResult, através de seu campo estático Sucess ou iniciailizando uma nova instancia(no caso de um erro)
 
