@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiCatalogo.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -11,6 +12,7 @@ namespace ApiCatalogo.Models
 
         [Required(ErrorMessage ="Nome é Obrigatorio")]
         [StringLength(80,ErrorMessage ="O nome deve ter até 80 caracteres", MinimumLength =3)]//Define o tamanho em bytes
+        [PrimeiraLetraMaiuscula]
         public string? Nome { get; set; }
         
         [Required]
