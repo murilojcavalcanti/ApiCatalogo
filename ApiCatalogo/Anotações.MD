@@ -169,3 +169,5 @@ Validação personalizada
 			
 			O método isValid retorna a classe ValidationResult, através de seu campo estático Sucess ou iniciailizando uma nova instancia(no caso de um erro)
 
+	2- Implementar IValidadetanleObject no seu modelo
+	

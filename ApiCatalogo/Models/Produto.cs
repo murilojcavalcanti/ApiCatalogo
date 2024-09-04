@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace ApiCatalogo.Models
 {
-    public class Produto
+    public class Produto :IValidatableObject
     {
         [Key]
         public int ProdutoId { get; set; }
@@ -32,5 +32,32 @@ namespace ApiCatalogo.Models
         
         [JsonIgnore]
         public Categoria? Categoria { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!string.IsNullOrEmpty(this.Nome))
+            {
+                var primeiraLetra = this.Nome[0].ToString();
+                if (primeiraLetra != primeiraLetra.ToUpper())
+                {
+                    yield return new //A palavra reservada yield indica que o metodo ou operador é um iterador e, usamos o yield return para retornar cada elemento individualmente
+                        ValidationResult("A primeira letra do produto deve ser maiúscula", new[]
+                    {
+                        nameof(this.Nome)}
+                    );
+                }
+            }
+
+            if (this.Estoque <= 0)
+            {
+                yield return new ValidationResult("Estoque deve ser maior que zero",
+                    new[]
+                    {
+                        nameof (this.Estoque)
+                    });
+
+            }
+
+        }
     }
 }
