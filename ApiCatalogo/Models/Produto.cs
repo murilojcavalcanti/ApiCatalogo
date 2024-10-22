@@ -7,13 +7,17 @@ namespace ApiCatalogo.Models
 {
     public class Produto :IValidatableObject
     {
+        public Produto()
+        {
+            
+        }
         [Key]
         public int ProdutoId { get; set; }
 
         [Required(ErrorMessage ="Nome é Obrigatorio")]
         [StringLength(80,ErrorMessage ="O nome deve ter até 80 caracteres", MinimumLength =3)]//Define o tamanho em bytes
         [PrimeiraLetraMaiuscula]
-        public string? Nome { get; set; }
+        public string? Nome { get; set; } 
         
         [Required]
         [StringLength(300, ErrorMessage ="o numero maximo de caracteres é {1}")]

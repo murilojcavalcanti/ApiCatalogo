@@ -10,11 +10,28 @@ namespace ApiCatalogo.Controllers
     public class CategoriasController : ControllerBase
     {
         private AppDbContext Context;
+        //Usando a interface Iconfiguration atraves da injeção de dependencias
+        private readonly IConfiguration _configuration;
 
-        public CategoriasController(AppDbContext context)
+        public CategoriasController(AppDbContext context, IConfiguration configuration)
         {
             Context = context;
+            _configuration = configuration;
         }
+
+
+
+        [HttpGet("LerArquivoConfiguracao")]
+        public string getValores()
+        {
+            var valor1 = _configuration["chave1"];
+            var valor2 = _configuration["chave2"];
+            var secao1 = _configuration["secao1:chave2"];
+
+            return $" Chave1: {valor1} \nChave2: {valor2} \nSeção1=>chave2 = {secao1}";
+        }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoriasProdutosAsync(int take = 10)
