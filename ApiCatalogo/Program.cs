@@ -1,5 +1,6 @@
 using ApiCatalogo.Context;
 using ApiCatalogo.Extensions;
+using ApiCatalogo.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -22,7 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
                                             opts.UseMySql(ConString,
                                             ServerVersion.AutoDetect(ConString)));
 
-
+//Define o registro do serviço usando o tempo de vida addScoped, para que o seriço seja criado a cada request.
+builder.Services.AddScoped<ApiLoggingFilter>();
 
 var app = builder.Build();
 
