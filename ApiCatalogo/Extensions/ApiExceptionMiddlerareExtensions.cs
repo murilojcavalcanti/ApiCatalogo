@@ -4,6 +4,7 @@ using System.Net;
 namespace ApiCatalogo.Extensions;
     public static class ApiExceptionMiddlerareExtensions
     {
+        //Método de extensão usando um middleware, que usa o metodo Run para fazer o tratamento de exceção global.
         public static void ConfigureExceptionHandler(this IApplicationBuilder app)
         {
             //Configura o middleware de tratamento recebendo um delegate que será executado quando uma exceção não tratada ocorrer

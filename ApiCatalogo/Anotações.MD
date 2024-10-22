@@ -51,7 +51,7 @@ Especifica um padrão de url para acessar um control
 
 
 ReferenceHandler
-Define como o JsonSerialxer lida com referencias sobre serialização e desserialização
+Define como o JsonSerialzer lida com referencias sobre serialização e desserialização
 
 Dicas de otimização
 1- Quando consultamos entidades usando entity framework ele armazena as entidades no contexto (em cache) realizando o tracking das 
@@ -109,13 +109,13 @@ chegam em um método action.
 - Sincronos:
 Quando um request chega, uma threads desse pool é encarregada de processar esse request.
 
-Se o request for proceesado de forma sincrona, a thread encarregada ficará bloqueada até o request finalizar.
+Se o request for processado de forma sincrona, a thread encarregada ficará bloqueada até o request finalizar.
 
 Assim, execução dos métodos é continua e se uam thread começar a executar um método, ela irá fiar ocupada até 
 a execução do método terminar.
 
 - Assíncrono
-Quando um request chega uma thread desse o=poool é encarregada de processar esse request
+Quando um request chega uma thread desse poool é encarregada de processar esse request
 
 Se o request for processado de forma assincrona, a thread é devolvida ao pool para servir novos requests.
 
@@ -125,7 +125,9 @@ Quando a operação assincrona terminar, a thread é avisada e retoma o controle
 Programação assincrona em .net
 No .net a abordagem é fazendo o uso das palavra async e await para criar metodos assincronos.
 É uma boa pratica definir o nome do metodo com Async no final quando ele for um metodo assincrono.
+
 Regras da programação assincrona no .net
+
 1- A assinatura do metodo dee incluir o medificador async;
 2- O método deve ter u tipo de retorno da task<Tresult>, taskou void;
 3- As declarações de método devem incluir pelo menos uma única expressão await- isso diz ao compilador que o métdo 
@@ -230,3 +232,42 @@ Roteiro para usar o midleware
 3-usar o middleware UseExceptionHandler e configurar o tratamento de erros
 4-Habilitar o uso do método de extensão ConfigureExceptionHandler na classe Program(app.configureExceptionHandler())
 5-Testar a implementação no swagger e no postman
+
+
+Filtros:
+são atributos anexados às classes ou métodos dos controladores que injetam lógica extra ao processamento da requisição e permitem a implementalção de 
+funcionalidades relacionadas a autorização, exception,log e cache de forma simples e elegante.
+
+São executados dentro do pipeline de invocação das actions do fluxo de requisição HTTP, ás vezes chamado de pipeline de filtros
+
+Este é executado após o framework selecionar a action a ser executada.
+
+Tipos: 
+Authorization:Relacionado a autorização do usuario
+
+Resource: pode executar código antes e depois do resto do filtro ser executado, tratam do request após a autorização e executam antes do model binding ocorrer
+
+Action: Executam o código imediatamente antes e depois do método action do controladore ser chamado.
+
+Exception: São usados para manipular exceções ocorridas antes de qualqueer coisa ser escrita no corpo da resposta.
+
+Result: Executam o código imediatamente antes e depois da execução dos resultados das actions individuiais do controlador.
+
+Implementação Síncrona
+	Os filtros sincronos que executam código antes e depois do pipeline definem os métodos OnAtionExcuting e OnActionExecuted
+
+Implementação Assíncrona
+	Os filtros assíncronos herdam de IAsyncActionFilter e são definidos com um único método: OnActionExecutingAsync que usa um FilterTypeExecutingContext 
+	e o delegate FilterTypeExecutionDelegate para executar o estágio do pipeline do Filtro
+
+Escopo e ordem de execução
+Pode ser adicionados em um dos tres escopos
+- Pelo Action
+- Pela classe controlador
+- Globalmente
+
+Ordem de execulçai
+1- Filtro global
+2- Flitro aplicado a classe 
+3- Filtro aplicado ao método
+
