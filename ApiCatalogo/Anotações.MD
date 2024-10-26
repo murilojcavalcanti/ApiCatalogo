@@ -272,36 +272,44 @@ Ordem de execulçai
 3- Filtro aplicado ao método
 
 
-Log de dados e logging: Conceito
+	- Log de dados e logging: Conceito
 
-Log de dados: É um arquivo gerado por um software para descrever eventos sobre o seu funcionamento, utilização por usuarios ou interação com outros sistemas sendo incrementado com o tempo
-com informações  que permitem detectar problemas de funcionamento, segurança e acessibilidade.
+		Log de dados: É um arquivo gerado por um software para descrever eventos sobre o seu funcionamento, utilização por usuarios ou interação com outros sistemas sendo incrementado com o tempo
+		com informações  que permitem detectar problemas de funcionamento, segurança e acessibilidade.
 
-Para obter um log de dados realizamos o resgistro em log ou logging 
- o registro em log(logging)  é um recurso essencial em aplicativos para detectar ou investigar problemas e analisar seu comportamento em geral.
+		Para obter um log de dados realizamos o resgistro em log ou logging 
+ 		o registro em log(logging)  é um recurso essencial em aplicativos para detectar ou investigar problemas e analisar seu comportamento em geral.
 
-A asp.net dá suporte a uma api de logging ou registro de atividades em log que funciona com uma variedade de provedores de logs.
+		A asp.net dá suporte a uma api de logging ou registro de atividades em log que funciona com uma variedade de provedores de logs.
 
-Os provedores internos permitem que você envie logs para um ou mais destinos e voê também pode se conectar a uma estrutura de registros de log de terceiros como Log4Ner, Nlog e Elmah.
+		Os provedores internos permitem que você envie logs para um ou mais destinos e voê também pode se conectar a uma estrutura de registros de log de terceiros como Log4Ner, Nlog e Elmah.
 
-Obs:Um provedor de log exibe ou armazena logs.
+		Obs:Um provedor de log exibe ou armazena logs.
 
-Os niveis de log permitem definir os níveis de severidade do resgistro das informações.
+		Os niveis de log permitem definir os níveis de severidade do resgistro das informações.
 
-Niveis de log:
-Critical,Debug, Error,Information,None,Trace e Warning
+		Niveis de log:
+			Critical,Debug, Error,Information,None,Trace e Warning
 
-O namespace principal de log no as.net core é o Extensions.Logging e ele expôe essas interfaces:
-- ILoggingFactory: É um factory interface para criar uma instancia apropriada do tipo ILogger e tambem para adicionar uma Instancia ILoggerProvider.
+		O namespace principal de log no as.net core é o Extensions.Logging e ele expôe essas interfaces:
+			- ILoggingFactory: É um factory interface para criar uma instancia apropriada do tipo ILogger e tambem para adicionar uma Instancia ILoggerProvider.
 
-- ILoggingProvider: Gerencia e cria o registrador apropriado especificado pela categoria de registro.
+			- ILoggingProvider: Gerencia e cria o registrador apropriado especificado pela categoria de registro.
 
-- ILogger: Inclui métodos para logging de registros subjacentes
+			- ILogger: Inclui métodos para logging de registros subjacentes
 
--OBS:No template de projeto padrão o namespace Microsoft.Extensions.Logging já está incluido, bem como os provedores de log para console,debug e eventsource
+		-OBS:No template de projeto padrão o namespace Microsoft.Extensions.Logging já está incluido, bem como os provedores de log para console,debug e eventsource
 
--Podemos usar uma instancia da interface ILogger via injeção de dependencia para criar logs usando o método Log e informando o nivel de log e uma string
-dessa forma: _logger.Log(LogLevel.informaation,"texto");
+		- Podemos usar uma instancia da interface ILogger via injeção de dependencia para criar logs usando o método Log e informando o nivel de log e uma string
+		  dessa forma: _logger.Log(LogLevel.informaation,"texto");
 
-Ou usando o metodo especifico para definir o nivel de log
-_logger.LogInformation("texto");
+		Ou usando o metodo especifico para definir o nivel de log
+		_logger.LogInformation("texto");
+
+
+
+	- Padrões de projeto
+
+		- Repository:
+   			Este padrão faz a mediação entre o dominio e as camadas de mapeamento de dados, agindo como uma coleção de objetos de domínio em memória.			Dessa forma o padrão repository vai separar a logica de acesso a dados e vai mapear essa logica para entidades na lógica de negocios.
+			As entidades de dominio e a logica de acesso a dados se comunicam usando interfaces, assim escondendo os detalhes do acesso a dados da camada de negócio, assim			a logica de negocio não tem conhecimento do ORM usado para fazer o acesso a dados, assim reduzino o acoplamento.			Beneficions do Rempository			 - Reduz a lógica de consulta na sua aplicação evitando consultas esparrmadas pelo condigo(Encapsula a lógica das consultas).			 - Desacopla a sua aplicação dos frameworks de persistencia como o EF Core (Você pode substituir o framwork facilmente)			 - Facilita a realização de testes unitários em se projeto (usando repositório fake)			 Repository Especifico			 Cria uma interface para uma entidade especifica contendo o contrato que define os métodos que a classe concreta deverá implementar			 Repository Generico 			 Cria uma interface contendo o contrato que define métodos genéricos que a classe concreta deverá implementar
