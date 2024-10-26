@@ -13,25 +13,17 @@ namespace ApiCatalogo.Controllers
         private AppDbContext Context;
         //Usando a interface Iconfiguration atraves da injeção de dependencias
         private readonly IConfiguration _configuration;
-
-        public CategoriasController(AppDbContext context, IConfiguration configuration)
+        //Definindo uma instancia da interface ILogger
+        private readonly ILogger Logger;
+                                                                                        //
+        public CategoriasController(AppDbContext context, IConfiguration configuration, 
+            //Injetando a instancia no construtor
+            ILogger<CategoriasController> logger)
         {
             Context = context;
             _configuration = configuration;
+            Logger = logger;
         }
-
-
-
-        [HttpGet("LerArquivoConfiguracao")]
-        public string getValores()
-        {
-            var valor1 = _configuration["chave1"];
-            var valor2 = _configuration["chave2"];
-            var secao1 = _configuration["secao1:chave2"];
-
-            return $" Chave1: {valor1} \nChave2: {valor2} \nSeção1=>chave2 = {secao1}";
-        }
-
 
 
         [HttpGet]
@@ -40,6 +32,7 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
+                Logger.LogInformation("================== GET api/Categorias/Produtos ===================================");
 
                 var categoriasProdutos = Context.Categorias.Include(p => p.Produtos).Take(10).ToListAsync();
                 if (categoriasProdutos is null) return NotFound("Nenhuma categoria foi encontrada...");
@@ -57,6 +50,7 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
+                Logger.LogInformation($"================== GET api/Categorias/id={id} ===================================");
                 var categoria = await Context.Categorias.AsNoTracking().FirstOrDefaultAsync(c => c.CategoriaId == id);
                 if (categoria is null) return NotFound("Categoria não encontrada...");
 

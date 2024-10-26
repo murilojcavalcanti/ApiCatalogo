@@ -271,3 +271,37 @@ Ordem de execulçai
 2- Flitro aplicado a classe 
 3- Filtro aplicado ao método
 
+
+Log de dados e logging: Conceito
+
+Log de dados: É um arquivo gerado por um software para descrever eventos sobre o seu funcionamento, utilização por usuarios ou interação com outros sistemas sendo incrementado com o tempo
+com informações  que permitem detectar problemas de funcionamento, segurança e acessibilidade.
+
+Para obter um log de dados realizamos o resgistro em log ou logging 
+ o registro em log(logging)  é um recurso essencial em aplicativos para detectar ou investigar problemas e analisar seu comportamento em geral.
+
+A asp.net dá suporte a uma api de logging ou registro de atividades em log que funciona com uma variedade de provedores de logs.
+
+Os provedores internos permitem que você envie logs para um ou mais destinos e voê também pode se conectar a uma estrutura de registros de log de terceiros como Log4Ner, Nlog e Elmah.
+
+Obs:Um provedor de log exibe ou armazena logs.
+
+Os niveis de log permitem definir os níveis de severidade do resgistro das informações.
+
+Niveis de log:
+Critical,Debug, Error,Information,None,Trace e Warning
+
+O namespace principal de log no as.net core é o Extensions.Logging e ele expôe essas interfaces:
+- ILoggingFactory: É um factory interface para criar uma instancia apropriada do tipo ILogger e tambem para adicionar uma Instancia ILoggerProvider.
+
+- ILoggingProvider: Gerencia e cria o registrador apropriado especificado pela categoria de registro.
+
+- ILogger: Inclui métodos para logging de registros subjacentes
+
+-OBS:No template de projeto padrão o namespace Microsoft.Extensions.Logging já está incluido, bem como os provedores de log para console,debug e eventsource
+
+-Podemos usar uma instancia da interface ILogger via injeção de dependencia para criar logs usando o método Log e informando o nivel de log e uma string
+dessa forma: _logger.Log(LogLevel.informaation,"texto");
+
+Ou usando o metodo especifico para definir o nivel de log
+_logger.LogInformation("texto");
