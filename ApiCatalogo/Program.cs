@@ -1,6 +1,10 @@
 using ApiCatalogo.Context;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
+using ApiCatalogo.Repositories;
+using ApiCatalogo.Repositories.RepositoryCategoria;
+using ApiCatalogo.Repositories.RepositoryProduto;
+using ApiCatalogo.Repositories.RespositoryProduto;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -25,6 +29,13 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 
 //Define o registro do serviço usando o tempo de vida addScoped, para que o seriço seja criado a cada request.
 builder.Services.AddScoped<ApiLoggingFilter>();
+
+//o tempo de vida AddScoped cria uma instancia por request
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IProdutoRepository, Produtorepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>);
+
+
 
 var app = builder.Build();
 
