@@ -1,6 +1,7 @@
 ﻿using ApiCatalogo.Context;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Models;
+using ApiCatalogo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,33 +11,33 @@ namespace ApiCatalogo.Controllers
     [Route("[Controller]")]
     public class CategoriasController : ControllerBase
     {
-        private AppDbContext Context;
+        private readonly IRepository<Categoria> Repository;
         //Usando a interface Iconfiguration atraves da injeção de dependencias
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration Configuration;
         //Definindo uma instancia da interface ILogger
         private readonly ILogger Logger;
-                                                                                        //
-        public CategoriasController(AppDbContext context, IConfiguration configuration, 
+        //
+        public CategoriasController(AppDbContext context, IConfiguration configuration,
             //Injetando a instancia no construtor
-            ILogger<CategoriasController> logger)
+            ILogger<CategoriasController> logger, IRepository<Categoria> repository)
         {
-            Context = context;
-            _configuration = configuration;
+            Configuration = configuration;
             Logger = logger;
+            Repository = repository;
         }
 
 
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoriasProdutosAsync(int take = 10)
+        public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutosAsync(int take =10)
         {
             try
             {
                 Logger.LogInformation("================== GET api/Categorias/Produtos ===================================");
 
-                var categoriasProdutos = Context.Categorias.Include(p => p.Produtos).Take(10).ToListAsync();
+                var categoriasProdutos = Repository.GetAll().Take(take).ToList();
                 if (categoriasProdutos is null) return NotFound("Nenhuma categoria foi encontrada...");
-                return await categoriasProdutos;
+                return categoriasProdutos;
             }
             catch (Exception)
             {
@@ -46,12 +47,12 @@ namespace ApiCatalogo.Controllers
 
         
         [HttpGet("{id:int:min(1)}", Name = "ObterCategoria")]
-        public async Task<ActionResult<Categoria>> GetAsync(int id)
+        public ActionResult<Categoria> GetAsync(int id)
         {
             try
             {
                 Logger.LogInformation($"================== GET api/Categorias/id={id} ===================================");
-                var categoria = await Context.Categorias.AsNoTracking().FirstOrDefaultAsync(c => c.CategoriaId == id);
+                var categoria = Repository.Get(c=>c.CategoriaId==id);
                 if (categoria is null) return NotFound("Categoria não encontrada...");
 
                 return categoria;
@@ -69,10 +70,8 @@ namespace ApiCatalogo.Controllers
             {
                 if (categoria == null) return BadRequest("Dados inválidos");
 
-                Context.Categorias.Add(categoria);
-                Context.SaveChanges();
-
-                return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId }, categoria);
+               Categoria categoriaCriada =  Repository.create(categoria);
+                return new CreatedAtRouteResult("ObterCategoria", new { id = categoriaCriada.CategoriaId }, categoriaCriada);
             }
             catch (Exception)
             {
@@ -87,8 +86,7 @@ namespace ApiCatalogo.Controllers
             try
             {
                 if (id != categoria.CategoriaId) return BadRequest("Dados inválidos");
-                Context.Entry(categoria).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                Context.SaveChanges();
+                Categoria CategoriaAtualizada = Repository.Update(categoria);
                 return Ok(categoria);
             }
             catch (Exception)
@@ -102,13 +100,12 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
-                var categoria = Context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = Repository.Get(c=>c.CategoriaId==id);
 
                 if (categoria is null) return BadRequest("Dados Inválidos");
 
-                Context.Categorias.Remove(categoria);
-                Context.SaveChanges();
-                return Ok(categoria);
+                Categoria categoriaExcluida = Repository.Delete(categoria);
+                return Ok(categoriaExcluida);
             }
             catch (Exception)
             {
