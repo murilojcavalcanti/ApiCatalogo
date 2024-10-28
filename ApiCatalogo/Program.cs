@@ -32,7 +32,7 @@ builder.Services.AddScoped<ApiLoggingFilter>();
 
 //o tempo de vida AddScoped cria uma instancia por request
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
-builder.Services.AddScoped<IProdutoRepository, Produtorepository>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 
