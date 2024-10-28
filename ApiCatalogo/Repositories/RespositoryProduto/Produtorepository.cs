@@ -4,9 +4,9 @@ using ApiCatalogo.Repositories.RepositoryProduto;
 
 namespace ApiCatalogo.Repositories.RespositoryProduto
 {
-    public class Produtorepository : Repository<Produto>, IProdutoRepository
+    public class ProdutoRepository : Repository<Produto>, IProdutoRepository
     {
-        public Produtorepository(AppDbContext context) : base(context)
+        public ProdutoRepository(AppDbContext context) : base(context)
         {
         }
 
