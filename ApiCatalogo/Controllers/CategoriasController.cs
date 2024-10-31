@@ -2,6 +2,7 @@
 using ApiCatalogo.Filters;
 using ApiCatalogo.Models;
 using ApiCatalogo.Repositories;
+using ApiCatalogo.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,18 +13,16 @@ namespace ApiCatalogo.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly IRepository<Categoria> Repository;
-        //Usando a interface Iconfiguration atraves da injeção de dependencias
-        private readonly IConfiguration Configuration;
         //Definindo uma instancia da interface ILogger
         private readonly ILogger Logger;
-        //
-        public CategoriasController(AppDbContext context, IConfiguration configuration,
-            //Injetando a instancia no construtor
-            ILogger<CategoriasController> logger, IRepository<Categoria> repository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CategoriasController(//Injetando a instancia no construtor
+                                    ILogger<CategoriasController> logger, IRepository<Categoria> repository, IUnitOfWork unitOfWork)
         {
-            Configuration = configuration;
             Logger = logger;
             Repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -35,7 +34,7 @@ namespace ApiCatalogo.Controllers
             {
                 Logger.LogInformation("================== GET api/Categorias/Produtos ===================================");
 
-                var categoriasProdutos = Repository.GetAll().Take(take).ToList();
+                var categoriasProdutos = _unitOfWork.CategoriaRepository.GetAll().Take(take).ToList();
                 if (categoriasProdutos is null) return NotFound("Nenhuma categoria foi encontrada...");
                 return categoriasProdutos;
             }
@@ -52,7 +51,7 @@ namespace ApiCatalogo.Controllers
             try
             {
                 Logger.LogInformation($"================== GET api/Categorias/id={id} ===================================");
-                var categoria = Repository.Get(c=>c.CategoriaId==id);
+                var categoria = _unitOfWork.CategoriaRepository.Get(c=>c.CategoriaId==id);
                 if (categoria is null) return NotFound("Categoria não encontrada...");
 
                 return categoria;
@@ -70,7 +69,8 @@ namespace ApiCatalogo.Controllers
             {
                 if (categoria == null) return BadRequest("Dados inválidos");
 
-               Categoria categoriaCriada =  Repository.create(categoria);
+               Categoria categoriaCriada =  _unitOfWork.CategoriaRepository.create(categoria);
+                _unitOfWork.Commit();
                 return new CreatedAtRouteResult("ObterCategoria", new { id = categoriaCriada.CategoriaId }, categoriaCriada);
             }
             catch (Exception)
@@ -86,7 +86,8 @@ namespace ApiCatalogo.Controllers
             try
             {
                 if (id != categoria.CategoriaId) return BadRequest("Dados inválidos");
-                Categoria CategoriaAtualizada = Repository.Update(categoria);
+                Categoria CategoriaAtualizada = _unitOfWork.CategoriaRepository.Update(categoria);
+                _unitOfWork.Commit();
                 return Ok(categoria);
             }
             catch (Exception)
@@ -100,11 +101,11 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
-                var categoria = Repository.Get(c=>c.CategoriaId==id);
+                var categoria = _unitOfWork.CategoriaRepository.Get(c=>c.CategoriaId==id);
 
                 if (categoria is null) return BadRequest("Dados Inválidos");
 
-                Categoria categoriaExcluida = Repository.Delete(categoria);
+                Categoria categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
                 return Ok(categoriaExcluida);
             }
             catch (Exception)
