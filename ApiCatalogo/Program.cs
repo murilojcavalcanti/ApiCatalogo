@@ -5,6 +5,7 @@ using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.RepositoryCategoria;
 using ApiCatalogo.Repositories.RepositoryProduto;
 using ApiCatalogo.Repositories.RespositoryProduto;
+using ApiCatalogo.Repositories.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -34,7 +35,7 @@ builder.Services.AddScoped<ApiLoggingFilter>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
+builder.Services.AddScoped<IUnitOfWork, unitOfWork>();
 
 
 var app = builder.Build();

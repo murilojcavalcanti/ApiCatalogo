@@ -18,7 +18,9 @@ namespace ApiCatalogo.Repositories
         }
         public IEnumerable<T> GetAll()
         {
-            return Context.Set<T>().ToList();
+            //O .AsNoTracking() é usado para realizar uma otimização no codigo, ele faz com que o entity framework
+            //core pare de gerenciar os estados das entidades na memoria. usado apenas para consulta
+            return Context.Set<T>().AsNoTracking().ToList();
             /*
              O metodo set é usado para acessar uma coleção ou uma tabela
              */
@@ -35,19 +37,22 @@ namespace ApiCatalogo.Repositories
         public T create(T entity)
         {
             Context.Set<T>().Add(entity);
-            Context.SaveChanges();
+            //Context.SaveChanges();
+            //Agora iremos usar o padrão UnitOfWork para realizar o salvamento
             return entity;
         }
        
 
         public T Update(T entity)
         {
-            Context.Set<T>().Update(entity);//Indicado para atualizações completas
+            //Indicado para atualizações completas
             /*Context.Entry(entity).State=EntityState.Modified;
              Define explicitamente o estado da entidade como modificado, então o entity framework vai 
              identificar que a entidade foi alterada e gera um sql de atualização para a entidade
              */
-            Context.SaveChanges();
+            Context.Set<T>().Update(entity);
+            //Context.SaveChanges();
+            //Agora iremos usar o padrão UnitOfWork para realizar o salvamento
             return entity;
         }
 
