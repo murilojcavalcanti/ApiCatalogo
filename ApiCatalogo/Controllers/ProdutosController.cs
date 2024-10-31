@@ -2,6 +2,7 @@
 using ApiCatalogo.Models;
 using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.RepositoryProduto;
+using ApiCatalogo.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -12,18 +13,16 @@ namespace ApiCatalogo.Controllers
     [Route("[Controller]")]
     public class ProdutosController : ControllerBase
     {
-        private AppDbContext Context;
-        private readonly IProdutoRepository ProdutoRepository;
-
-        public ProdutosController(IProdutoRepository produtoRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public ProdutosController(IUnitOfWork unitOfWork)
         {
-            ProdutoRepository = produtoRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("Produto/{id}")]
         public ActionResult<IEnumerable<Produto>> GetProdutoCategoria(int id, IProdutoRepository produtoRepository)
         {
-            List<Produto> produtos = ProdutoRepository.GetProdutoByCategoria(id).ToList();
+            List<Produto> produtos = _unitOfWork.ProdutoRepository.GetProdutoByCategoria(id).ToList();
             if (produtos is null)
                 return NotFound();
 
@@ -36,12 +35,12 @@ namespace ApiCatalogo.Controllers
             List<Produto> produtos;
             try
             {
-                produtos = ProdutoRepository.GetAll().Take(take).ToList();
+                produtos = _unitOfWork.ProdutoRepository.GetAll().Take(take).ToList();
                 if (produtos is null) return NotFound("Produtos não encontrados");
 
                 return produtos;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao tratar a sua solicitação");
             }
@@ -52,7 +51,7 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
-                Produto produto = ProdutoRepository.Get(p => p.ProdutoId == id);
+                Produto produto =  _unitOfWork.ProdutoRepository.Get(p => p.ProdutoId == id);
                 if (produto is null)
                 {
                     return NotFound($"Produto com id-> {id} não encontrado!");
@@ -72,7 +71,8 @@ namespace ApiCatalogo.Controllers
             try
             {
                 if (produto is null) return BadRequest("Dados Invalidos");
-                Produto produtoNew = ProdutoRepository.create(produto);
+                Produto produtoNew = _unitOfWork.ProdutoRepository.create(produto);
+                _unitOfWork.Commit();
                 return new CreatedAtRouteResult("ObterProduto", new { id = produtoNew.ProdutoId }, produtoNew);
             }
             catch (Exception)
@@ -89,7 +89,8 @@ namespace ApiCatalogo.Controllers
                 if (id != produto.ProdutoId) 
                     return BadRequest("Dados Invalidos");
 
-                Produto produtoUpdated = ProdutoRepository.Update(produto);
+                Produto produtoUpdated = _unitOfWork.ProdutoRepository.Update(produto);
+                _unitOfWork.Commit();
                 return Ok(produtoUpdated);
 
             }
@@ -105,9 +106,10 @@ namespace ApiCatalogo.Controllers
         {
             try
             {
-                var produto = ProdutoRepository.Get(p=>p.ProdutoId==id);
+                var produto =_unitOfWork.ProdutoRepository.Get(p=>p.ProdutoId==id);
                 if (produto is null) return NotFound($"Produto com id -> {id} não localizado...");
-                Produto produtoDeleted = ProdutoRepository.Delete(produto);
+                Produto produtoDeleted = _unitOfWork.ProdutoRepository.Delete(produto);
+                _unitOfWork.Commit();
                 return Ok(produtoDeleted);
 
             }
