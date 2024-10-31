@@ -106,6 +106,7 @@ namespace ApiCatalogo.Controllers
                 if (categoria is null) return BadRequest("Dados Inválidos");
 
                 Categoria categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
+                _unitOfWork.Commit();
                 return Ok(categoriaExcluida);
             }
             catch (Exception)
