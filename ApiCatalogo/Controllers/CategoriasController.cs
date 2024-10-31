@@ -12,7 +12,8 @@ namespace ApiCatalogo.Controllers
     [Route("[Controller]")]
     public class CategoriasController : ControllerBase
     {
-        private readonly IRepository<Categoria> Repository;
+        /*Ao implementar o unit of work deixamos de precisar injetar o repository, pois ele ja é implementado em Unit Of Work*/
+        
         //Definindo uma instancia da interface ILogger
         private readonly ILogger Logger;
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +22,6 @@ namespace ApiCatalogo.Controllers
                                     ILogger<CategoriasController> logger, IRepository<Categoria> repository, IUnitOfWork unitOfWork)
         {
             Logger = logger;
-            Repository = repository;
             _unitOfWork = unitOfWork;
         }
 
