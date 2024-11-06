@@ -46,20 +46,23 @@ namespace ApiCatalogo.Repositories
         public T Update(T entity)
         {
             //Indicado para atualizações completas
+            Context.Set<T>().Update(entity);
+            
             /*Context.Entry(entity).State=EntityState.Modified;
              Define explicitamente o estado da entidade como modificado, então o entity framework vai 
              identificar que a entidade foi alterada e gera um sql de atualização para a entidade
              */
-            Context.Set<T>().Update(entity);
+            
             //Context.SaveChanges();
             //Agora iremos usar o padrão UnitOfWork para realizar o salvamento
+            
             return entity;
         }
 
         public T Delete(T entity)
         {
             Context.Set<T>().Remove(entity);
-            Context.SaveChanges();
+            //Context.SaveChanges();
             return entity;
         }
 
