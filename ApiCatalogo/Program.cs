@@ -1,4 +1,5 @@
 using ApiCatalogo.Context;
+using ApiCatalogo.DTO.Mapping.Profiles;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Repositories;
@@ -27,6 +28,19 @@ var ConString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(opts =>
                                             opts.UseMySql(ConString,
                                             ServerVersion.AutoDetect(ConString)));
+
+//injetando o Automapper 
+builder.Services.AddAutoMapper(typeof(Program));
+/*
+ Essa configuração é usada para informar ao automapper quais tipos do seu aplicativo contem os perfis de mapeamento
+ o parametro typeof espeficica que os perfis de mapeamento devem ser procurados no assembly, onde a classe está localizada.
+ 
+ Normalmente esse é o assembly principal ou assembly de inicialização da aplicação.
+
+ */
+
+//assembly:UNidade de umplantação e distribuição do .NET, que inclui código executavel, metadados e outros recursos necessarios
+//para executar um aplicativo
 
 //Define o registro do serviço usando o tempo de vida addScoped, para que o seriço seja criado a cada request.
 builder.Services.AddScoped<ApiLoggingFilter>();
