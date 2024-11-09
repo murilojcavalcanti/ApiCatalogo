@@ -1,10 +1,13 @@
 ﻿using ApiCatalogo.Context;
+using ApiCatalogo.DTO.ProdutoDto;
 using ApiCatalogo.Models;
 using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.RepositoryProduto;
 using ApiCatalogo.Repositories.UnitOfWork;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ApiCatalogo.Controllers
@@ -14,23 +17,36 @@ namespace ApiCatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProdutosController(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public ProdutosController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet("Produto/{id}")]
-        public ActionResult<IEnumerable<Produto>> GetProdutoCategoria(int id, IProdutoRepository produtoRepository)
+        public ActionResult<IEnumerable<ProdutoDTO>> GetProdutoCategoria(int id, IProdutoRepository produtoRepository)
         {
-            List<Produto> produtos = _unitOfWork.ProdutoRepository.GetProdutoByCategoria(id).ToList();
-            if (produtos is null)
-                return NotFound();
+            try
+            {
 
-            return Ok(produtos);
+                List<Produto> produtos = _unitOfWork.ProdutoRepository.GetProdutoByCategoria(id).ToList();
+                if (produtos is null)
+                    return NotFound();
+
+                IEnumerable<ProdutoDTO> produtosDTO = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
+
+                return Ok(produtosDTO);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao tratar a sua solicitação");
+
+            }
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>> GetAll(int take = 10)
+        public ActionResult<IEnumerable<ProdutoDTO>> GetAll(int take = 10)
         {
             List<Produto> produtos;
             try
@@ -38,7 +54,10 @@ namespace ApiCatalogo.Controllers
                 produtos = _unitOfWork.ProdutoRepository.GetAll().Take(take).ToList();
                 if (produtos is null) return NotFound("Produtos não encontrados");
 
-                return produtos;
+                List<ProdutoDTO> produtosDTO = _mapper.Map<List<ProdutoDTO>>(produtos);
+
+
+                return produtosDTO;
             }
             catch (Exception)
             {
@@ -47,16 +66,17 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
-        public ActionResult<Produto> Get(int id)
+        public ActionResult<ProdutoDTO> Get(int id)
         {
             try
             {
-                Produto produto =  _unitOfWork.ProdutoRepository.Get(p => p.ProdutoId == id);
+                Produto produto = _unitOfWork.ProdutoRepository.Get(p => p.ProdutoId == id);
                 if (produto is null)
                 {
                     return NotFound($"Produto com id-> {id} não encontrado!");
                 }
-                return produto;
+                ProdutoDTO produtoDTO = _mapper.Map<ProdutoDTO>(produto);
+                return produtoDTO;
             }
             catch (Exception)
             {
@@ -66,14 +86,18 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(Produto produto)
+        public ActionResult<ProdutoDTO> Post(ProdutoDTO produtoDTO)
         {
             try
             {
-                if (produto is null) return BadRequest("Dados Invalidos");
+                if (produtoDTO is null) return BadRequest("Dados Invalidos");
+                
+                Produto produto = _mapper.Map<Produto>(produtoDTO);
                 Produto produtoNew = _unitOfWork.ProdutoRepository.create(produto);
                 _unitOfWork.Commit();
-                return new CreatedAtRouteResult("ObterProduto", new { id = produtoNew.ProdutoId }, produtoNew);
+
+                ProdutoDTO produtoDtoNew = _mapper.Map<ProdutoDTO>(produto);
+                return new CreatedAtRouteResult("ObterProduto", new { id = produtoDtoNew.ProdutoId }, produtoDtoNew);
             }
             catch (Exception)
             {
@@ -82,16 +106,19 @@ namespace ApiCatalogo.Controllers
             }
         }
         [HttpPut("{id:int:min(1)}")]
-        public ActionResult Put(int id, Produto produto)
+        public ActionResult<ProdutoDTO> Put(int id, ProdutoDTO produtoDTO)
         {
             try
             {
-                if (id != produto.ProdutoId) 
+                if (id != produtoDTO.ProdutoId)
                     return BadRequest("Dados Invalidos");
 
+                Produto produto = _mapper.Map<Produto>(produtoDTO);
                 Produto produtoUpdated = _unitOfWork.ProdutoRepository.Update(produto);
                 _unitOfWork.Commit();
-                return Ok(produtoUpdated);
+
+                ProdutoDTO produtoDtoUpdated = _mapper.Map<ProdutoDTO>(produtoUpdated);
+                return Ok(produtoDtoUpdated);
 
             }
             catch (Exception)
@@ -102,15 +129,17 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpDelete("{id:int:min(1)}")]
-        public ActionResult Delete(int id)
+        public ActionResult<ProdutoDTO> Delete(int id)
         {
             try
             {
-                var produto =_unitOfWork.ProdutoRepository.Get(p=>p.ProdutoId==id);
+                Produto produto = _unitOfWork.ProdutoRepository.Get(p => p.ProdutoId == id);
                 if (produto is null) return NotFound($"Produto com id -> {id} não localizado...");
                 Produto produtoDeleted = _unitOfWork.ProdutoRepository.Delete(produto);
                 _unitOfWork.Commit();
-                return Ok(produtoDeleted);
+                ProdutoDTO produtoDtoDeleted = _mapper.Map<ProdutoDTO>(produto);
+
+                return Ok(produtoDtoDeleted);
 
             }
             catch (Exception)
