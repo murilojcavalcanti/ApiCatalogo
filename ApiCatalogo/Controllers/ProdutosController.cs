@@ -5,6 +5,8 @@ using ApiCatalogo.Repositories;
 using ApiCatalogo.Repositories.RepositoryProduto;
 using ApiCatalogo.Repositories.UnitOfWork;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -127,6 +129,39 @@ namespace ApiCatalogo.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao tratar a sua solicitação");
             }
         }
+
+
+        [HttpPatch("{id}/UpdatePartial")]
+        public ActionResult<ResponseUpdateProdutoDTO> Patch(int id, JsonPatchDocument<RequestUpdateProdutoDTO> patchProdutoDto)
+        {
+            if (patchProdutoDto is null || id<=0) return BadRequest();
+
+            Produto produto = _unitOfWork.ProdutoRepository.Get(p => p.ProdutoId == id);
+
+            if (produto is null) return NotFound();
+
+            RequestUpdateProdutoDTO requestUpdateProduto = _mapper.Map<RequestUpdateProdutoDTO>(produto);
+            if (requestUpdateProduto is null) return NotFound("Ocorreu um erro ao mapear o produto!");
+
+            //Aplicando as alterações parciais do patchprodutodto no produto.
+            patchProdutoDto.ApplyTo(requestUpdateProduto,ModelState);
+
+            //valida se as alterações foram aplicadas.
+            if (!ModelState.IsValid || TryValidateModel(requestUpdateProduto))
+            {
+                return BadRequest(ModelState);
+            }
+
+            _mapper.Map(requestUpdateProduto, produto);
+            _unitOfWork.ProdutoRepository.Update(produto);
+            _unitOfWork.Commit();
+
+
+            return Ok(_mapper.Map<ResponseUpdateProdutoDTO>(produto));
+
+
+        }
+
 
         [HttpDelete("{id:int:min(1)}")]
         public ActionResult<ProdutoDTO> Delete(int id)
