@@ -17,7 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(opts =>
     //Ignora o objeto quando um ciclo de referencia é detectado durante a serialização.
     opts.JsonSerializerOptions
-    .ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    .ReferenceHandler = ReferenceHandler.IgnoreCycles)
+    .AddNewtonsoftJson();//Adicionando o Newtonsoft as controllers
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
