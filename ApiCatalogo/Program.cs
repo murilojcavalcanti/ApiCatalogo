@@ -1,5 +1,4 @@
 using ApiCatalogo.Context;
-using ApiCatalogo.DTO.Mapping.Profiles;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Repositories;
@@ -7,6 +6,7 @@ using ApiCatalogo.Repositories.RepositoryCategoria;
 using ApiCatalogo.Repositories.RepositoryProduto;
 using ApiCatalogo.Repositories.RespositoryProduto;
 using ApiCatalogo.Repositories.UnitOfWork;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -23,7 +23,12 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+/*
+ * Realizando a configuração do identity, o usuario com Identity user as funções com o Role, o mecanismo de salvamento no banco de dados com Stores.
+ */
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
                 //Este aqui é um exemplo de quando usamos o builder pra ler o arquivo de configuração.
 var ConString = builder.Configuration.GetConnectionString("DefaultConnection");
 
