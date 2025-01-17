@@ -334,3 +334,4 @@ Ordem de execulçai
 		-Habilita o suporte ao json patch na aspnet
 		-fornece um parser  e um serealizador para o formato json patch
 
+		Roteiro para usar o Identity
