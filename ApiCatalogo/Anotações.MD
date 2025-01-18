@@ -335,3 +335,25 @@ Ordem de execulçai
 		-fornece um parser  e um serealizador para o formato json patch
 
 		Roteiro para usar o Identity
+
+
+RefreshToken 
+	- é um token de atualização, ou seja, é criado sem a necessidade de login
+
+Passo a passo de implementação da autenticação JWT Bearer
+	- instalar o pacote microsoft.AspNetCore.Authentication.JwtBearer
+	- realizar as configurações do Token JWt no arquivo appsetting.json
+		EX:
+			"JWT": {
+			"ValidAudience": "Projeto",
+			"ValidIssuer": "Usuario",
+			"SecretKey": "chaveSercreta",
+			"TokenValidityInMinutes": 30,
+			"RefreshTokenValidityInMinutes": 60
+			 },
+
+	- Habilitar e configurar autenticação JWT Bearer na aplicação
+		Opções:
+			Cookie Authetication,OAuth,OpenID Connect, Windows Authetication, Api Key Authetication, Token Authetication
+	- preparar as tabelas do identity para armazenar o refreshToken
+		- Criar a classe applicationUser e ajustar o código para armazenar o RefreshToken
